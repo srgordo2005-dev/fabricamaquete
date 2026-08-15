@@ -22,7 +22,7 @@ if %errorlevel% neq 0 (
 echo.
 echo [Passo 2/4] Vinculando a pasta do aplicativo com o painel da Vercel...
 echo.
-call npx vercel link --yes
+call npx vercel link --project resulta-app --yes
 
 :: 3. Configurar as chaves do Supabase no ambiente de nuvem do Vercel
 echo.
