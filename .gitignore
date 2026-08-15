@@ -1,0 +1,34 @@
+# Configurações de segurança para o GitHub
+# Evita publicar senhas e arquivos temporários pesados
+
+# Credenciais e Senhas (CRÍTICO)
+*.env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Bibliotecas e Pacotes (Super pesados, instalados via npm/bun localmente)
+node_modules/
+/node_modules
+BetSmarterHub_extracted/node_modules/
+galo mura/node_modules/
+bun.lockb
+package-lock.json
+
+# Arquivos Executáveis Compilados (.exe)
+*.exe
+campo_tatil_sistema/servidor_ponte/campo-tatil-ponte.exe
+galo mura/galo-mura.exe
+
+# Dados Locais e Temporários
+galo mura/db.json
+.DS_Store
+Thumbs.db
+*.log
+.gemini/
+/scratch/
+.tempmediaStorage/
+.user_uploaded/
+.system_generated/

@@ -1,0 +1,77 @@
+{
+  "roosters": [
+    {
+      "id": "4",
+      "name": "Trovão",
+      "owner": "Lucas",
+      "plumage": "Riscado"
+    },
+    {
+      "id": "1783984846029",
+      "name": "Prego",
+      "owner": "João",
+      "plumage": "Vermelho"
+    },
+    {
+      "id": "1783984857491",
+      "name": "Truva",
+      "owner": "Gabriel",
+      "plumage": "Pintado"
+    }
+  ],
+  "sponsors": [],
+  "activeFight": {
+    "id": "1784742619692",
+    "rooster1": {
+      "name": "jhhbjv",
+      "owner": "kbbh",
+      "plumage": "Carijó",
+      "ring": "jbhhjb",
+      "weight": "bkjbkj",
+      "ribbon": "Azul"
+    },
+    "rooster2": {
+      "name": "bjhhjvb",
+      "owner": "jhvjh",
+      "plumage": "Caboclo",
+      "ring": "ghg",
+      "weight": "jh hj",
+      "ribbon": "Vermelha"
+    },
+    "winnerId": null,
+    "active": true
+  },
+  "history": [
+    {
+      "id": "1783984882777",
+      "rooster1": "Prego (João)",
+      "rooster2": "Truva (Gabriel)",
+      "winner": "Prego (Dono: João)",
+      "timestamp": "20:21"
+    },
+    {
+      "id": "1784029342925",
+      "rooster1": "Tr (Jh)",
+      "rooster2": "Uh (Uh)",
+      "winner": "Empate",
+      "timestamp": "08:42"
+    },
+    {
+      "id": "1784742640066",
+      "rooster1": {
+        "name": "Hdhdh",
+        "owner": "Jb",
+        "plumage": "Branco"
+      },
+      "rooster2": {
+        "name": "Jailson",
+        "owner": "Jose",
+        "plumage": "Prata"
+      },
+      "winner": "Hdhdh (Prop.: Jb)",
+      "date": "22/07/2026",
+      "timestamp": "14:50"
+    }
+  ],
+  "queue": []
+}

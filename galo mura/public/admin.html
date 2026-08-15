@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Controle - Galo Mura</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="admin-container">
+    
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <h1>Controle de Exposição</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Gerencie confrontos e cadastros direto do celular</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="admin-nav" style="grid-template-columns: 1fr 1fr 1fr;">
+      <button class="tab-btn active" onclick="switchTab('match')">Combate</button>
+      <button class="tab-btn" onclick="switchTab('sponsors')">Patrocinadores</button>
+      <button class="tab-btn" onclick="switchTab('report')">Relatório</button>
+    </nav>
+
+    <!-- Tab Content 1: Match Control -->
+    <section id="tab-match" class="panel tab-content">
+      <h2 style="margin-bottom: 15px; font-size: 1.3rem;">Gerenciar Combate Atual</h2>
+      
+      <div id="no-fight-message" style="display: none; text-align: center; padding: 20px 0;">
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Nenhum combate ativo no momento.</p>
+      </div>
+
+      <div id="active-fight-controls">
+        <div class="match-selector-grid">
+          <!-- Fighter 1 (Blue) -->
+          <div class="match-selector-card blue">
+            <span style="font-size: 0.8rem; font-weight: 800; color: #60a5fa; text-transform: uppercase;">Canto Azul</span>
+            <h3 id="ctrl-name-left" style="margin: 8px 0; font-size: 1.2rem;">-</h3>
+            <p id="ctrl-owner-left" style="font-size: 0.85rem; color: var(--text-muted);">-</p>
+          </div>
+
+          <!-- Fighter 2 (Red) -->
+          <div class="match-selector-card red">
+            <span style="font-size: 0.8rem; font-weight: 800; color: #f87171; text-transform: uppercase;">Canto Vermelho</span>
+            <h3 id="ctrl-name-right" style="margin: 8px 0; font-size: 1.2rem;">-</h3>
+            <p id="ctrl-owner-right" style="font-size: 0.85rem; color: var(--text-muted);">-</p>
+          </div>
+        </div>
+
+        <!-- Winner selectors (Only shows if no winner selected yet) -->
+        <div id="declare-winner-section" class="winner-selection" style="display: flex; flex-direction: column; gap: 8px;">
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); text-align: center; margin-bottom: 5px;">Declarar Vencedor:</p>
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <button class="winner-btn blue" onclick="setWinner('left')" style="flex: 1;">Canto Azul</button>
+            <button class="winner-btn red" onclick="setWinner('right')" style="flex: 1;">Canto Vermelho</button>
+            <button class="winner-btn draw" onclick="setWinner('draw')" style="flex: 1;">Empate</button>
+          </div>
+          <button onclick="skipFight()" class="btn-secondary" style="color: var(--color-red); border-color: rgba(239,68,68,0.3); font-weight: bold; width: 100%; padding: 10px; margin-top: 5px; text-transform: uppercase;">Pular Combate (Sem Vencedor)</button>
+        </div>
+
+        <!-- Finish Fight Button (Shows when a winner is declared) -->
+        <div id="finish-fight-section" style="display: none; margin-top: 20px; text-align: center;">
+          <p id="winner-status-text" style="font-weight: 800; color: var(--accent-gold); margin-bottom: 15px; font-size: 1.1rem;"></p>
+          <button class="btn-primary" onclick="archiveFight()">Confirmar e Finalizar Rodada</button>
+          <button class="btn-secondary" onclick="resetWinner()" style="width: 100%; margin-top: 10px;">Corrigir Resultado</button>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 25px 0;">
+
+      <!-- Launch New Match -->
+      <h2 style="margin-bottom: 15px; font-size: 1.3rem;">Lançar Novo Confronto</h2>
+      <form id="new-match-form">
+        <!-- Rooster 1 (Blue Corner) -->
+        <fieldset style="border: 1px solid rgba(59, 130, 246, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px; background: rgba(59, 130, 246, 0.02);">
+          <legend style="color: #60a5fa; font-weight: bold; padding: 0 8px; font-size: 0.9rem;">Galo 1 (Canto Azul)</legend>
+          <div class="form-group">
+            <label>Nome do Galo</label>
+            <input type="text" id="rooster1-name" placeholder="Ex: Bravura" required>
+          </div>
+          <div class="form-group">
+            <label>Proprietário (Criador)</label>
+            <input type="text" id="rooster1-owner" placeholder="Ex: Felipe" required>
+          </div>
+          <div class="form-group">
+            <label>Número da Anilha</label>
+            <input type="text" id="rooster1-ring" placeholder="Ex: A-452" required>
+          </div>
+          <div class="form-group">
+            <label>Peso do Galo</label>
+            <input type="text" id="rooster1-weight" placeholder="Ex: 3.200 kg" required>
+          </div>
+          <div class="form-group">
+            <label>Cor da Plumagem</label>
+            <select id="rooster1-plumage" required>
+              <option value="Carijó">Carijó</option>
+              <option value="Caboclo">Caboclo</option>
+              <option value="Prata">Prata</option>
+              <option value="Tostado">Tostado</option>
+              <option value="Branco">Branco</option>
+              <option value="Muleto">Muleto</option>
+              <option value="Laranja">Laranja</option>
+              <option value="Ruano">Ruano</option>
+              <option value="Capa Amarela">Capa Amarela</option>
+              <option value="Pratinha">Pratinha</option>
+              <option value="Gis">Gis</option>
+              <option value="Abóbora">Abóbora</option>
+              <option value="Cinza">Cinza</option>
+              <option value="Prata Escuro">Prata Escuro</option>
+              <option value="Barroso">Barroso</option>
+              <option value="Roxo">Roxo</option>
+              <option value="Preto-e-Branco">Preto-e-Branco</option>
+              <option value="Capa Vermelha">Capa Vermelha</option>
+              <option value="Amarelo">Amarelo</option>
+              <option value="Salmão">Salmão</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cor da Fita</label>
+            <select id="rooster1-ribbon" required>
+              <option value="Azul">Fita Azul</option>
+              <option value="Vermelha">Fita Vermelha</option>
+              <option value="Amarela">Fita Amarela</option>
+              <option value="Verde">Fita Verde</option>
+              <option value="Branca">Fita Branca</option>
+              <option value="Nenhuma">Sem Fita</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <!-- Rooster 2 (Red Corner) -->
+        <fieldset style="border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px; background: rgba(239, 68, 68, 0.02);">
+          <legend style="color: #f87171; font-weight: bold; padding: 0 8px; font-size: 0.9rem;">Galo 2 (Canto Vermelho)</legend>
+          <div class="form-group">
+            <label>Nome do Galo</label>
+            <input type="text" id="rooster2-name" placeholder="Ex: Sentinela" required>
+          </div>
+          <div class="form-group">
+            <label>Proprietário (Criador)</label>
+            <input type="text" id="rooster2-owner" placeholder="Ex: José" required>
+          </div>
+          <div class="form-group">
+            <label>Número da Anilha</label>
+            <input type="text" id="rooster2-ring" placeholder="Ex: V-982" required>
+          </div>
+          <div class="form-group">
+            <label>Peso do Galo</label>
+            <input type="text" id="rooster2-weight" placeholder="Ex: 3.250 kg" required>
+          </div>
+          <div class="form-group">
+            <label>Cor da Plumagem</label>
+            <select id="rooster2-plumage" required>
+              <option value="Caboclo">Caboclo</option>
+              <option value="Carijó">Carijó</option>
+              <option value="Prata">Prata</option>
+              <option value="Tostado">Tostado</option>
+              <option value="Branco">Branco</option>
+              <option value="Muleto">Muleto</option>
+              <option value="Laranja">Laranja</option>
+              <option value="Ruano">Ruano</option>
+              <option value="Capa Amarela">Capa Amarela</option>
+              <option value="Pratinha">Pratinha</option>
+              <option value="Gis">Gis</option>
+              <option value="Abóbora">Abóbora</option>
+              <option value="Cinza">Cinza</option>
+              <option value="Prata Escuro">Prata Escuro</option>
+              <option value="Barroso">Barroso</option>
+              <option value="Roxo">Roxo</option>
+              <option value="Preto-e-Branco">Preto-e-Branco</option>
+              <option value="Capa Vermelha">Capa Vermelha</option>
+              <option value="Amarelo">Amarelo</option>
+              <option value="Salmão">Salmão</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cor da Fita</label>
+            <select id="rooster2-ribbon" required>
+              <option value="Vermelha">Fita Vermelha</option>
+              <option value="Azul">Fita Azul</option>
+              <option value="Amarela">Fita Amarela</option>
+              <option value="Verde">Fita Verde</option>
+              <option value="Branca">Fita Branca</option>
+              <option value="Nenhuma">Sem Fita</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn-primary" style="margin-top: 10px;">Adicionar à Fila de Combates</button>
+      </form>
+
+      <!-- Registered combats queue list -->
+      <h2 style="margin-top: 25px; margin-bottom: 15px; font-size: 1.3rem;">Fila de Combates Cadastrados</h2>
+      <div id="queue-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass); margin-bottom: 15px;">
+        <!-- Rendered queue list -->
+      </div>
+    </section>
+
+    <!-- Tab Content 3: Sponsors Management -->
+    <section id="tab-sponsors" class="panel tab-content" style="display: none;">
+      <h2 style="margin-bottom: 15px; font-size: 1.3rem;">Adicionar Patrocinador</h2>
+      <form id="sponsor-form">
+        <div class="form-group">
+          <label for="sponsor-name">Nome da Empresa / Marca</label>
+          <input type="text" id="sponsor-name" placeholder="Ex: Agropecuária Silva" required>
+        </div>
+        <div class="form-group">
+          <label>Logo do Patrocinador (Imagem)</label>
+          <div class="file-upload-wrapper">
+            <span class="file-upload-btn" id="upload-btn-label">Selecionar Imagem</span>
+            <input type="file" id="sponsor-logo-file" accept="image/*">
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Formatos aceitos: JPG, PNG, WEBP. Ajuste de tamanho automático.</span>
+        </div>
+        <button type="submit" class="btn-primary" style="margin-top: 10px;">Salvar Patrocinador</button>
+      </form>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 25px 0;">
+
+      <h3 style="margin-bottom: 10px;">Patrocinadores Ativos</h3>
+      <div id="sponsors-list">
+        <!-- List of sponsors will load here -->
+      </div>
+    </section>
+
+    <!-- Tab Content 4: Reports and Resets -->
+    <section id="tab-report" class="panel tab-content" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2 style="font-size: 1.3rem;">Relatório de Ganhadores</h2>
+        <button class="btn-secondary" onclick="window.print()" style="padding: 6px 12px; font-size: 0.85rem;">Imprimir</button>
+      </div>
+
+      <div id="report-empty" style="text-align: center; padding: 20px 0; color: var(--text-muted);">
+        Nenhum combate finalizado ainda.
+      </div>
+      
+      <div id="report-list" style="margin-bottom: 25px;">
+        <!-- Finished matches list -->
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 25px 0;">
+
+      <h3 style="color: var(--color-red); margin-bottom: 10px;">Área de Perigo</h3>
+      <button class="btn-secondary" onclick="resetDatabase()" style="border-color: var(--color-red); color: var(--color-red); width: 100%;">
+        Limpar Todo o Torneio (Reiniciar do Zero)
+      </button>
+    </section>
+
+  </div>
+
+  <!-- Printable Area for PDF Report -->
+  <div id="print-report-area">
+    <h1 style="text-align: center; margin-bottom: 5px; font-size: 1.8rem; color: #000; font-family: 'Outfit', sans-serif;">Relatório de Resultados</h1>
+    <h3 style="text-align: center; margin-bottom: 25px; font-size: 1.1rem; color: #666; font-weight: normal; font-family: 'Inter', sans-serif;">Exposição Galo Mura</h3>
+    <table class="print-table">
+      <thead>
+        <tr>
+          <th>Horário</th>
+          <th>Galo 1 (Azul) - Plumagem - Proprietário</th>
+          <th>Galo 2 (Vermelho) - Plumagem - Proprietário</th>
+          <th>Vencedor da Rodada</th>
+        </tr>
+      </thead>
+      <tbody id="print-report-table-body">
+        <!-- Rows will fill dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Small toast notification -->
+  <div id="toast" class="toast">Ação realizada com sucesso!</div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

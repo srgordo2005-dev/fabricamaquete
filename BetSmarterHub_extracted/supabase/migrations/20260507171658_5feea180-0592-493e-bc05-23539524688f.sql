@@ -1,0 +1,1 @@
+ALTER VIEW public.match_vote_counts SET (security_invoker = true);

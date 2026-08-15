@@ -1,0 +1,19 @@
+{
+  "name": "campo-tatil-ponte",
+  "version": "1.0.0",
+  "description": "Servidor ponte de WebSocket para comunicação entre Supabase e ESP32",
+  "main": "servidor_integracao.js",
+  "scripts": {
+    "start": "node servidor_integracao.js",
+    "pkg": "pkg . --targets node18-win-x64 --output campo-tatil-ponte.exe"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.8",
+    "dotenv": "^16.4.5",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  },
+  "bin": "servidor_integracao.js"
+}

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exposição de Galo Mura - Painel TV</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Load QRCode library locally (100% offline) -->
+  <script src="qrcode.min.js"></script>
+</head>
+<body>
+
+  <div class="tv-container">
+    
+    <!-- Top Bar -->
+    <header class="tv-header panel">
+      <div class="tv-title">
+        <span class="badge-live">AO VIVO</span>
+        <h1>Exposição Galo Mura</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <button id="btn-open-control" class="btn-control-trigger">⚙️ Painel</button>
+        <div class="tv-clock" id="tv-clock">19:59:45</div>
+      </div>
+    </header>
+
+    <!-- Main Arena (Fighters) -->
+    <main class="tv-arena">
+      
+      <!-- Fighter Left (Blue Corner) -->
+      <div class="fighter-card left panel" id="card-left">
+        <div class="fighter-tag">Canto Azul</div>
+        <h2 class="rooster-name" id="name-left" style="font-size: 2.2rem; margin-top: 15px; margin-bottom: 20px; color: #fff;">Carregando...</h2>
+        
+        <!-- Specifications List -->
+        <ul class="specs-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; text-align: left; width: 85%; font-size: 1.15rem;">
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Cor:</span>
+            <span id="spec-color-left" style="font-weight: 800; color: #fff;">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Anilha:</span>
+            <span id="spec-ring-left" style="font-weight: 800; color: var(--accent-gold);">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Peso:</span>
+            <span id="spec-weight-left" style="font-weight: 800; color: #fff;">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Proprietário:</span>
+            <span id="spec-owner-left" style="font-weight: 800; color: #fff;">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Fita:</span>
+            <span id="spec-ribbon-left" style="font-weight: 800; padding: 2px 8px; border-radius: 4px; color: #fff;">-</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- VS Divider / Status -->
+      <div class="vs-divider">
+        <div class="vs-line"></div>
+        <div class="vs-circle" id="match-status">VS</div>
+        <div class="vs-line"></div>
+      </div>
+
+      <!-- Fighter Right (Red Corner) -->
+      <div class="fighter-card right panel" id="card-right">
+        <div class="fighter-tag">Canto Vermelho</div>
+        <h2 class="rooster-name" id="name-right" style="font-size: 2.2rem; margin-top: 15px; margin-bottom: 20px; color: #fff;">Carregando...</h2>
+        
+        <!-- Specifications List -->
+        <ul class="specs-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; text-align: left; width: 85%; font-size: 1.15rem;">
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Cor:</span>
+            <span id="spec-color-right" style="font-weight: 800; color: #fff;">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Anilha:</span>
+            <span id="spec-ring-right" style="font-weight: 800; color: var(--accent-gold);">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Peso:</span>
+            <span id="spec-weight-right" style="font-weight: 800; color: #fff;">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Proprietário:</span>
+            <span id="spec-owner-right" style="font-weight: 800; color: #fff;">-</span>
+          </li>
+          <li style="border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-weight: bold;">Fita:</span>
+            <span id="spec-ribbon-right" style="font-weight: 800; padding: 2px 8px; border-radius: 4px; color: #fff;">-</span>
+          </li>
+        </ul>
+      </div>
+
+    </main>
+
+    <!-- Sponsors Section (Dynamic Layout) -->
+    <footer class="tv-sponsors-section panel">
+      <div class="sponsors-title">Apoio & Patrocinadores</div>
+      <div class="sponsors-grid" id="sponsors-grid">
+        <!-- Sponsor items will auto-adjust size and render here -->
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Control Modal (Subtle popup on PC) -->
+  <div id="control-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 820px;">
+      <div class="modal-header">
+        <h2>Painel de Controle do Torneio</h2>
+        <button id="btn-close-modal" class="close-btn">&times;</button>
+      </div>
+      
+      <div style="display: flex; gap: 24px; text-align: left;">
+        <!-- Left Column: Combat management -->
+        <div style="flex: 1.2; display: flex; flex-direction: column; gap: 15px;">
+          <!-- Current match control -->
+          <div id="modal-match-control">
+            <h3 style="margin-bottom: 10px; font-size: 1.1rem; color: var(--accent-gold);">Combate Ativo</h3>
+            <div id="modal-no-fight" style="display: none; text-align: center; padding: 15px 0; color: var(--text-muted);">
+              Nenhum combate ativo no momento.
+            </div>
+            <div id="modal-fight-active">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px;">
+                <div style="flex: 1; padding: 10px; border-left: 3px solid var(--color-blue); background: rgba(59,130,246,0.05); border-radius: 8px;">
+                  <span style="font-size: 0.75rem; color: #60a5fa; font-weight: 800; display: block; text-transform: uppercase;">Azul</span>
+                  <strong id="modal-name-left" style="font-size: 1.1rem; display: block; margin-top: 2px;">-</strong>
+                  <span id="modal-owner-left" style="font-size: 0.8rem; color: var(--text-muted); display: block;">-</span>
+                </div>
+                <div style="flex: 1; padding: 10px; border-left: 3px solid var(--color-red); background: rgba(239,68,68,0.05); border-radius: 8px;">
+                  <span style="font-size: 0.75rem; color: #f87171; font-weight: 800; display: block; text-transform: uppercase;">Vermelho</span>
+                  <strong id="modal-name-right" style="font-size: 1.1rem; display: block; margin-top: 2px;">-</strong>
+                  <span id="modal-owner-right" style="font-size: 0.8rem; color: var(--text-muted); display: block;">-</span>
+                </div>
+              </div>
+              
+              <div id="modal-declare-winner" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-align: center;">Declarar Vencedor:</p>
+                <div style="display: flex; gap: 8px;">
+                  <button class="winner-btn blue" onclick="setWinner('left')" style="flex: 1; padding: 10px; font-size: 0.8rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; text-transform: uppercase;">Azul</button>
+                  <button class="winner-btn red" onclick="setWinner('right')" style="flex: 1; padding: 10px; font-size: 0.8rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; text-transform: uppercase;">Vermelho</button>
+                  <button class="winner-btn draw" onclick="setWinner('draw')" style="flex: 1; padding: 10px; font-size: 0.8rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; text-transform: uppercase;">Empate</button>
+                </div>
+                <button onclick="skipFight()" style="width: 100%; padding: 8px; margin-top: 5px; font-size: 0.8rem; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1); color: #f87171; cursor: pointer; font-weight: bold; text-transform: uppercase;">Pular Combate (Sem Vencedor)</button>
+              </div>
+              
+              <div id="modal-finish-section" style="display: none; text-align: center; margin-bottom: 15px;">
+                <p id="modal-winner-text" style="font-weight: 800; color: var(--accent-gold); margin-bottom: 10px; font-size: 1rem;"></p>
+                <button class="btn-primary" onclick="archiveFight()" style="padding: 10px; font-size: 0.85rem; width: 100%; border-radius: 6px; border: none; cursor: pointer; background: var(--accent-gold); color: var(--bg-primary); font-weight: 800; text-transform: uppercase;">Finalizar e Arquivar</button>
+                <button class="btn-secondary" onclick="resetWinner()" style="padding: 8px; width: 100%; margin-top: 6px; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: #fff; cursor: pointer;">Corrigir Resultado</button>
+              </div>
+            </div>
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 5px 0;">
+          
+          <!-- New fight launcher -->
+          <h3 style="margin-bottom: 10px; font-size: 1.1rem; color: var(--accent-gold);">Lançar Novo Confronto</h3>
+          <form id="modal-new-match-form" style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 10px;">
+              <!-- Galo 1 -->
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 0.75rem; color: #60a5fa; font-weight: 800; text-transform: uppercase;">Galo 1 (Azul)</label>
+                <input type="text" id="m-rooster1-name" placeholder="Nome do Galo" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <input type="text" id="m-rooster1-owner" placeholder="Proprietário" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <input type="text" id="m-rooster1-ring" placeholder="Número da Anilha" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <input type="text" id="m-rooster1-weight" placeholder="Peso (ex: 3.200 kg)" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <select id="m-rooster1-plumage" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: #1e293b; color: #fff;">
+                  <option value="Carijó">Carijó</option>
+                  <option value="Caboclo">Caboclo</option>
+                  <option value="Prata">Prata</option>
+                  <option value="Tostado">Tostado</option>
+                  <option value="Branco">Branco</option>
+                  <option value="Muleto">Muleto</option>
+                  <option value="Laranja">Laranja</option>
+                  <option value="Ruano">Ruano</option>
+                  <option value="Capa Amarela">Capa Amarela</option>
+                  <option value="Pratinha">Pratinha</option>
+                  <option value="Gis">Gis</option>
+                  <option value="Abóbora">Abóbora</option>
+                  <option value="Cinza">Cinza</option>
+                  <option value="Prata Escuro">Prata Escuro</option>
+                  <option value="Barroso">Barroso</option>
+                  <option value="Roxo">Roxo</option>
+                  <option value="Preto-e-Branco">Preto-e-Branco</option>
+                  <option value="Capa Vermelha">Capa Vermelha</option>
+                  <option value="Amarelo">Amarelo</option>
+                  <option value="Salmão">Salmão</option>
+                </select>
+                <select id="m-rooster1-ribbon" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: #1e293b; color: #fff;">
+                  <option value="Azul">Fita Azul</option>
+                  <option value="Vermelha">Fita Vermelha</option>
+                  <option value="Amarela">Fita Amarela</option>
+                  <option value="Verde">Fita Verde</option>
+                  <option value="Branca">Fita Branca</option>
+                  <option value="Nenhuma">Sem Fita</option>
+                </select>
+              </div>
+              <!-- Galo 2 -->
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 0.75rem; color: #f87171; font-weight: 800; text-transform: uppercase;">Galo 2 (Vermelho)</label>
+                <input type="text" id="m-rooster2-name" placeholder="Nome do Galo" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <input type="text" id="m-rooster2-owner" placeholder="Proprietário" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <input type="text" id="m-rooster2-ring" placeholder="Número da Anilha" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <input type="text" id="m-rooster2-weight" placeholder="Peso (ex: 3.200 kg)" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff;">
+                <select id="m-rooster2-plumage" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: #1e293b; color: #fff;">
+                  <option value="Caboclo">Caboclo</option>
+                  <option value="Carijó">Carijó</option>
+                  <option value="Prata">Prata</option>
+                  <option value="Tostado">Tostado</option>
+                  <option value="Branco">Branco</option>
+                  <option value="Muleto">Muleto</option>
+                  <option value="Laranja">Laranja</option>
+                  <option value="Ruano">Ruano</option>
+                  <option value="Capa Amarela">Capa Amarela</option>
+                  <option value="Pratinha">Pratinha</option>
+                  <option value="Gis">Gis</option>
+                  <option value="Abóbora">Abóbora</option>
+                  <option value="Cinza">Cinza</option>
+                  <option value="Prata Escuro">Prata Escuro</option>
+                  <option value="Barroso">Barroso</option>
+                  <option value="Roxo">Roxo</option>
+                  <option value="Preto-e-Branco">Preto-e-Branco</option>
+                  <option value="Capa Vermelha">Capa Vermelha</option>
+                  <option value="Amarelo">Amarelo</option>
+                  <option value="Salmão">Salmão</option>
+                </select>
+                <select id="m-rooster2-ribbon" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: #1e293b; color: #fff;">
+                  <option value="Vermelha">Fita Vermelha</option>
+                  <option value="Azul">Fita Azul</option>
+                  <option value="Amarela">Fita Amarela</option>
+                  <option value="Verde">Fita Verde</option>
+                  <option value="Branca">Fita Branca</option>
+                  <option value="Nenhuma">Sem Fita</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" style="padding: 10px; margin-top: 5px; border-radius: 6px; border: none; cursor: pointer; background: var(--accent-gold); color: var(--bg-primary); font-weight: 800; text-transform: uppercase;">Adicionar à Fila de Combates</button>
+          </form>
+
+          <!-- Registered combats queue list -->
+          <h3 style="margin-top: 15px; margin-bottom: 8px; font-size: 1.1rem; color: var(--accent-gold);">Fila de Combates Cadastrados</h3>
+          <div id="modal-queue-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); margin-bottom: 5px;">
+            <!-- Rendered queue list -->
+          </div>
+        </div>
+        
+        <!-- Right Column: Sponsors & Mobile Connection -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--border-glass); padding-left: 20px;">
+          <!-- Sponsor management section -->
+          <div>
+            <h3 style="margin-bottom: 8px; font-size: 1.1rem; color: var(--accent-gold);">Patrocinadores (PC)</h3>
+            <form id="modal-sponsor-form" style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <label style="font-size: 0.75rem; color: var(--text-muted);">Nome da Marca</label>
+                <input type="text" id="m-sponsor-name" placeholder="Ex: Agro Silva" required style="padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.8rem;">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <label style="font-size: 0.75rem; color: var(--text-muted);">Logo (Opcional)</label>
+                <div class="file-upload-wrapper">
+                  <span class="file-upload-btn" id="m-upload-btn-label" style="padding: 6px; font-size: 0.75rem;">Escolher Imagem</span>
+                  <input type="file" id="m-sponsor-logo-file" accept="image/*">
+                </div>
+              </div>
+              <button type="submit" style="padding: 6px; border-radius: 6px; border: none; cursor: pointer; background: var(--accent-gold); color: var(--bg-primary); font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Adicionar Patrocinador</button>
+            </form>
+            
+            <div id="modal-sponsors-list" style="margin-top: 8px; max-height: 110px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 8px; border: 1px solid var(--border-glass); font-size: 0.8rem;">
+              <!-- Rendered sponsor items -->
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 3px 0;">
+
+          <!-- Connection instructions -->
+          <div>
+            <p style="color: var(--accent-gold); font-size: 0.8rem; font-weight: 800; margin-bottom: 4px; text-transform: uppercase;">Passo a Passo Celular:</p>
+            <ol style="font-size: 0.7rem; color: var(--text-muted); padding-left: 12px; display: flex; flex-direction: column; gap: 2px; line-height: 1.2;">
+              <li>Conecte na <strong>mesma rede Wi-Fi</strong>.</li>
+              <li>Aponte a câmera para o <strong>QR Code</strong>.</li>
+            </ol>
+          </div>
+          
+          <!-- Connection info inside modal -->
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border-glass); text-align: left;">
+            <div>
+              <p style="font-weight: 800; color: var(--accent-gold); font-size: 0.75rem; margin-bottom: 2px;">Controle pelo Celular</p>
+              <p id="local-url-text" style="color: var(--text-muted); font-size: 0.7rem; font-family: monospace;">http://192.168.1.9:3000/admin.html</p>
+              <button id="btn-toggle-qr" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: var(--accent-gold); font-size: 0.7rem; cursor: pointer; padding: 3px 6px; margin-top: 4px; border-radius: 4px; display: flex; align-items: center; gap: 3px;">
+                <span id="eye-icon">👁️</span> Mostrar QR Code
+              </button>
+            </div>
+            <div id="qrcode-canvas" class="qr-canvas" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load script logic -->
+  <script src="rooster-svg.js"></script>
+  <script src="tv.js"></script>
+</body>
+</html>

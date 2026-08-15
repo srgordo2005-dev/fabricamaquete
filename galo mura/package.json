@@ -1,0 +1,22 @@
+{
+  "name": "galo-mura",
+  "version": "1.0.0",
+  "description": "App de exibição para exposição de Galo Mura",
+  "main": "server.js",
+  "bin": "server.js",
+  "pkg": {
+    "assets": [
+      "public/**/*"
+    ]
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "jimp": "^1.6.1"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}

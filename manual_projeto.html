@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Manual de Projeto e Montagem - Campo Tátil PRO</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 40px;
+      background-color: #fff;
+    }
+    h1, h2, h3 {
+      color: #0b3c1b;
+      border-bottom: 2px solid #00ff87;
+      padding-bottom: 8px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .spec-table th, .spec-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    .spec-table th {
+      background-color: #f2f9f5;
+      color: #0b3c1b;
+    }
+    .wiring-diagram {
+      background-color: #f8f9fa;
+      border-left: 5px solid #0b3c1b;
+      padding: 15px;
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+    .step {
+      margin-bottom: 25px;
+    }
+    .step-number {
+      background-color: #0b3c1b;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 50%;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    .highlight {
+      background-color: #e8f5e9;
+      padding: 2px 5px;
+      font-weight: bold;
+      border-radius: 3px;
+    }
+    @media print {
+      body {
+        margin: 20px;
+        font-size: 12pt;
+      }
+      .wiring-diagram {
+        border: 1px solid #aaa;
+      }
+      .no-print {
+        display: none;
+      }
+      page-break-before {
+        always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Manual Técnico de Engenharia & Montagem</h1>
+  <p style="text-align: center; font-style: italic; color: #666;">
+    Projeto Campo Tátil: Maquete de Futebol Portátil para Deficientes Visuais
+  </p>
+
+  <h2>1. 📐 Medidas e Especificações Mecânicas Gerais</h2>
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Componente / Elemento</th>
+        <th>Dimensão Oficial</th>
+        <th>Função Principal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Gabinete Inferior (Carcaça)</strong></td>
+        <td>240mm (X) x 160mm (Y) x 26mm (Z)</td>
+        <td>Base de proteção física e suporte eletrônico.</td>
+      </tr>
+      <tr>
+        <td><strong>Tampa Superior (Campo)</strong></td>
+        <td>240mm (X) x 160mm (Y) x 1.5mm (Espessura)</td>
+        <td>Espessura de 1.5mm garante arraste magnético perfeito.</td>
+      </tr>
+      <tr>
+        <td><strong>Marcações Táteis do Campo</strong></td>
+        <td>+1.2mm de altura em relevo</td>
+        <td>Linhas de fundo, laterais e áreas para segunda mão.</td>
+      </tr>
+      <tr>
+        <td><strong>Hastes Eixo Y (2 unidades)</strong></td>
+        <td>Haste lisa de aço de 8mm (140mm de comprimento)</td>
+        <td>Guias lineares do portal móvel da maquete.</td>
+      </tr>
+      <tr>
+        <td><strong>Haste Eixo X (1 unidade)</strong></td>
+        <td>Haste lisa de aço de 8mm (220mm de comprimento)</td>
+        <td>Guia da ponte móvel que suporta o carrinho do ímã.</td>
+      </tr>
+      <tr>
+        <td><strong>Ímã de Neodímio</strong></td>
+        <td>N52 de 12mm x 3mm (Cilindro)</td>
+        <td>Tração magnética através do plástico do campo.</td>
+      </tr>
+      <tr>
+        <td><strong>Motores de Passo (2x)</strong></td>
+        <td>NEMA 14 Pancake (Diâmetro 36.5mm / Altura ~17mm)</td>
+        <td>Movimentação cartesiana leve e compacta.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. 🔌 Esquema de Fiação e Pinagem do ESP32-S3</h2>
+  <p>Ligue todos os cabos nas portas de controle de acordo com a tabela abaixo:</p>
+  
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Componente</th>
+        <th>Pino do Módulo</th>
+        <th>GPIO correspondente no ESP32-S3</th>
+        <th>Observação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Driver TMC2208 (X)</strong></td>
+        <td>STEP / DIR / EN</td>
+        <td>GPIO 11 / GPIO 12 / GPIO 10</td>
+        <td>Controla o motor do carrinho do Eixo X.</td>
+      </tr>
+      <tr>
+        <td><strong>Driver TMC2208 (Y)</strong></td>
+        <td>STEP / DIR / EN</td>
+        <td>GPIO 13 / GPIO 14 / GPIO 9</td>
+        <td>Controla o motor da ponte do Eixo Y.</td>
+      </tr>
+      <tr>
+        <td><strong>Áudio DAC MAX98357A</strong></td>
+        <td>BCLK / LRC / DIN</td>
+        <td>GPIO 15 / GPIO 16 / GPIO 17</td>
+        <td>Conexão digital I2S de som limpo.</td>
+      </tr>
+      <tr>
+        <td><strong>Medidor de Carga</strong></td>
+        <td>Pino ADC (Analógico)</td>
+        <td>GPIO 4 (com Divisor de 2 Resistores 10k)</td>
+        <td>Mede a tensão para o aviso de voz de bateria.</td>
+      </tr>
+      <tr>
+        <td><strong>Motor de Vibração</strong></td>
+        <td>Porta de Sinal PWM</td>
+        <td>GPIO 18 (ligado no Transistor NPN)</td>
+        <td>Dispara os pulsos de GOL ou falta.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="wiring-diagram">
+ESQUEMA DE LIGAÇÃO DE ÁUDIO AUTOMÁTICO (FONE E ALTO-FALANTE):
+
+[ Saída MAX98357A (+) ] -----------> [ Pino 2 e 3 do P2 Jack PJ-307 ] (Som unificado L+R)
+[ Saída MAX98357A (-) ] -----------> [ Pino 1 do P2 Jack PJ-307 ] (GND / Comum)
+
+[ Pino 4 do P2 (Chave) ] ----------> [ Terminal (+) do Alto-falante de 3W ]
+[ Saída MAX98357A (-) ] -----------> [ Terminal (-) do Alto-falante de 3W ]
+  </div>
+
+  <h2>3. 🛠️ Guia de Montagem Passo a Passo</h2>
+  
+  <div class="step">
+    <span class="step-number">1</span> 
+    <strong>Limpeza das Buchas 3D:</strong> 
+    Lixe levemente o furo interno das buchas deslizantes impressas em 3D em PETG. Passe um pouco de graxa de silicone ou cole fita PTFE (Teflon) dentro para que elas deslizem nas hastes de 8mm de aço com suavidade e sem fazer ruído.
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>Montagem do Portal Y (A Ponte):</strong>
+    Insira os dois Carrinhos Y Laterais nas hastes guia Y da caixa. Insira a haste de metal X (ponte) sob pressão entre os dois carrinhos laterais. Verifique se a ponte desliza para frente e para trás de forma livre.
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Montagem do Carrinho Central X:</strong>
+    Insira o Carrinho Central X na haste central de metal. Coloque o ímã de neodímio 12x3mm no topo do carrinho (virado para cima) e cole o mini motor de vibração de 10mm no bolso inferior do ímã.
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <strong>Tensionamento das Correias:</strong>
+    Passe a correia GT2 de 6mm por baixo dos carrinhos Y laterais e trave os dentes da correia nas garras. Estique a correia até a polia louca na frente e ao pinhão do motor NEMA 14 na traseira. A correia deve ficar firme, sem balançar.
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span>
+    <strong>Instalação da Placa Tipo-C e Tela LCD:</strong>
+    Encaixe a placa carregadora 15W Tipo-C e o Visor LCD de bateria nos trilhos de guia na frente da carcaça. Eles vão deslizar até encostar na parede, alinhando as portas Tipo-C e o painel nos furos que projetamos.
+  </div>
+
+  <div class="no-print" style="margin-top: 50px; border-top: 1px dashed #ccc; padding-top: 20px;">
+    <strong>ℹ️ Como salvar este manual em PDF:</strong><br>
+    Pressione <strong>Ctrl + P</strong> no seu teclado (ou Cmd + P no Mac), escolha o destino <strong>"Salvar como PDF"</strong> e clique em Salvar!
+  </div>
+
+</body>
+</html>

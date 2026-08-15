@@ -1,0 +1,14 @@
+{
+  "name": "campo-tatil-servidor-integracao",
+  "version": "1.0.0",
+  "description": "Servidor ponte de WebSocket para comunicação entre Supabase e ESP32",
+  "main": "servidor_integracao.js",
+  "scripts": {
+    "start": "node servidor_integracao.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.8",
+    "dotenv": "^16.4.5",
+    "ws": "^8.16.0"
+  }
+}

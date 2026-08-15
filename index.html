@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campo Tátil - Painel de Controle & Simulador Tablet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header principal -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">⚽</div>
+        <div>
+          <h1>Campo Tátil <span>PRO</span></h1>
+          <p class="subtitle">Controlador de Campo de Futebol para Maquete Acessível</p>
+        </div>
+      </div>
+      
+      <div class="status-bar">
+        <div class="status-pill" id="status-conn">
+          <span class="status-dot disconnected" id="status-dot"></span>
+          <span id="conn-text">Desconectado</span>
+        </div>
+        <button class="btn btn-connect-ble" id="btn-ble">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>
+          Bluetooth ESP32
+        </button>
+        <button class="btn btn-connect-ws" id="btn-ws">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          WebSocket
+        </button>
+      </div>
+    </header>
+
+    <!-- Layout Principal -->
+    <main class="app-main">
+      <!-- Painel Esquerdo: O Campo Interativo / Tablet Canvas -->
+      <section class="pitch-section card">
+        <div class="pitch-header">
+          <div class="pitch-title">
+            <span class="pulse-indicator">● TRANSMISSÃO AO VIVO</span>
+            <h2>Campo Interativo de Luz (Tablet)</h2>
+          </div>
+          <div class="coords-badge" id="coords-display">
+            X: <strong id="val-x">50.0%</strong> | Y: <strong id="val-y">50.0%</strong>
+          </div>
+        </div>
+
+        <!-- Canvas do Campo de Futebol -->
+        <div class="pitch-container" id="pitch-wrapper">
+          <canvas id="pitch-canvas"></canvas>
+          <div class="pitch-overlay-instructions" id="touch-hint">
+            👆 Arraste o dedo ou a luz para guiar a maquete magnética
+          </div>
+        </div>
+
+        <!-- Barra de Controles Rápidos sob o Campo -->
+        <div class="pitch-actions">
+          <button class="btn-action" id="btn-center">
+            📍 Centralizar Bola
+          </button>
+          <button class="btn-action" id="btn-swap-sides">
+            🔄 Inverter Lado (2º Tempo)
+          </button>
+          <div class="mode-toggle">
+            <label>Modo de Luz:</label>
+            <button class="btn-toggle active" id="btn-light-mode">Bola de Alto Brilho</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel Direito: Controles Táticos, Sincronia de Áudio e Simulações -->
+      <aside class="control-sidebar">
+        
+        <!-- Cartão: Disparo Háptico & Teste de Vibração -->
+        <div class="card haptic-card">
+          <h3>💥 Impulso Háptico (Vibração)</h3>
+          <p class="card-desc">Simula o disparo do motor vibratório na manopla do usuário.</p>
+          <div class="haptic-grid">
+            <button class="btn-haptic btn-haptic-goal" id="btn-vib-goal">
+              ⚽ GOL! (Triplo)
+            </button>
+            <button class="btn-haptic btn-haptic-foul" id="btn-vib-foul">
+              ⚠️ FALTA / CARTÃO
+            </button>
+            <button class="btn-haptic btn-haptic-post" id="btn-vib-post">
+              🥅 CHUTE NA TRAVE
+            </button>
+            <button class="btn-haptic btn-haptic-corner" id="btn-vib-corner">
+              🚩 ESCANTEIO
+            </button>
+          </div>
+        </div>
+
+        <!-- Cartão: Simulação de Jogadas Pré-Programadas -->
+        <div class="card sim-card">
+          <h3>🎬 Simulação de Jogadas ao Vivo</h3>
+          <p class="card-desc">Execute trajetórias automáticas da bola para testar os motores.</p>
+          <div class="sim-buttons">
+            <button class="btn-sim" id="sim-attack-right">
+              ▶️ Ataque Rápido Direita
+            </button>
+            <button class="btn-sim" id="sim-penalty">
+              🎯 Cobrança de Pênalti
+            </button>
+            <button class="btn-sim" id="sim-zigzag">
+              ⚡ Drible em Zigue-Zague
+            </button>
+            <button class="btn-sim btn-stop" id="sim-stop">
+              ⏹️ Parar Simulação
+            </button>
+          </div>
+        </div>
+
+        <!-- Cartão: Sincronismo Dinâmico de Áudio (Delay Buffer) -->
+        <div class="card audio-sync-card">
+          <h3>🎙️ Sincronismo de Áudio da Rádio</h3>
+          <p class="card-desc">Atrasa os motores para coincidir exatamente com a narração humana.</p>
+
+          <div class="sync-formula">
+            <code>Disparo = Tempo + (D_áudio - D_dados)</code>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Atraso da Rádio (D_áudio):</span>
+              <strong id="lbl-audio-delay">8.5s</strong>
+            </div>
+            <input type="range" id="slider-audio-delay" min="0" max="20" step="0.5" value="8.5">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Velocidade de Transição LERP:</span>
+              <strong id="lbl-lerp-speed">Suave (15%)</strong>
+            </div>
+            <input type="range" id="slider-lerp" min="5" max="40" step="1" value="15">
+          </div>
+        </div>
+
+        <!-- Cartão: Comando de Voz / Acessibilidade WCAG -->
+        <div class="card voice-card">
+          <h3>🎙️ Interface por Comando de Voz</h3>
+          <p class="card-desc">Mantenha o botão pressionado e fale para comandar a maquete.</p>
+          <button class="btn-voice" id="btn-voice-command">
+            <span class="mic-icon">🎙️</span> Segure para Falar
+          </button>
+          <div class="voice-output" id="voice-log">
+            Aguardando comando de voz (Ex: "Qual o placar?", "Ir para a área")...
+          </div>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- Footer com Informações da Telemetria -->
+    <footer class="app-footer">
+      <div>ESP32-S3 Status: <span id="telemetry-status">Pronto para transmissão (60 FPS)</span></div>
+      <div>Protocolo: <span id="telemetry-proto">BLE / WebSockets</span></div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

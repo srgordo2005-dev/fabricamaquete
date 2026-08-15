@@ -1,0 +1,5 @@
+ALTER TABLE public.matches_cache
+  ADD COLUMN IF NOT EXISTS home_goals INTEGER,
+  ADD COLUMN IF NOT EXISTS away_goals INTEGER,
+  ADD COLUMN IF NOT EXISTS status_short TEXT,
+  ADD COLUMN IF NOT EXISTS status_elapsed INTEGER;
