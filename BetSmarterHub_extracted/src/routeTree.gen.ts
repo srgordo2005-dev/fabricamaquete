@@ -21,6 +21,7 @@ import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CercamentoRouteImport } from './routes/cercamento'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AcessivelJaRouteImport } from './routes/acessivel-ja'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamTeamNameRouteImport } from './routes/team.$teamName'
 import { Route as MatchMatchIdRouteImport } from './routes/match.$matchId'
@@ -87,6 +88,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcessivelJaRoute = AcessivelJaRouteImport.update({
+  id: '/acessivel-ja',
+  path: '/acessivel-ja',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -115,6 +121,7 @@ const ApiPublicRefreshLiveRoute = ApiPublicRefreshLiveRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acessivel-ja': typeof AcessivelJaRoute
   '/auth': typeof AuthRoute
   '/cercamento': typeof CercamentoRoute
   '/dashboard': typeof DashboardRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acessivel-ja': typeof AcessivelJaRoute
   '/auth': typeof AuthRoute
   '/cercamento': typeof CercamentoRoute
   '/dashboard': typeof DashboardRoute
@@ -154,6 +162,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acessivel-ja': typeof AcessivelJaRoute
   '/auth': typeof AuthRoute
   '/cercamento': typeof CercamentoRoute
   '/dashboard': typeof DashboardRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acessivel-ja'
     | '/auth'
     | '/cercamento'
     | '/dashboard'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acessivel-ja'
     | '/auth'
     | '/cercamento'
     | '/dashboard'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/acessivel-ja'
     | '/auth'
     | '/cercamento'
     | '/dashboard'
@@ -233,6 +245,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcessivelJaRoute: typeof AcessivelJaRoute
   AuthRoute: typeof AuthRoute
   CercamentoRoute: typeof CercamentoRoute
   DashboardRoute: typeof DashboardRoute
@@ -337,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acessivel-ja': {
+      id: '/acessivel-ja'
+      path: '/acessivel-ja'
+      fullPath: '/acessivel-ja'
+      preLoaderRoute: typeof AcessivelJaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -377,6 +397,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcessivelJaRoute: AcessivelJaRoute,
   AuthRoute: AuthRoute,
   CercamentoRoute: CercamentoRoute,
   DashboardRoute: DashboardRoute,
@@ -397,3 +418,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
