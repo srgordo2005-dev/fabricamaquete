@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { TeamJersey } from "@/components/TeamJersey";
 import { TeamLogo } from "@/components/TeamLogo";
 import { cn } from "@/lib/utils";
-import { RefreshCw, Sparkles, Zap, Scale, Trophy, Target, X, Calculator, Search, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { RefreshCw, Sparkles, Zap, Scale, Trophy, Target, X, Calculator, Search, Star, ChevronLeft, ChevronRight, Mic, MicOff, Volume2, VolumeX, Accessibility } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -53,6 +53,89 @@ function Dashboard() {
   const [cerc, setCerc] = useState<CercSelection[]>([]);
   const [page, setPage] = useState(1);
   const [leagueQuery, setLeagueQuery] = useState("");
+  
+  // Acessibilidade e Busca por Voz
+  const [searchQuery, setSearchQuery] = useState("");
+  const [voiceListening, setVoiceListening] = useState(false);
+  const [accessibilityMode, setAccessibilityMode] = useState(() => {
+    try { return localStorage.getItem("acessibilidade_ativa") === "true"; } catch { return false; }
+  });
+  const [focusedMatchId, setFocusedMatchId] = useState<string | null>(null);
+
+  const speakText = (text: string) => {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "pt-BR";
+      u.rate = 1.1;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  };
+
+  const startVoiceSearch = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error("Reconhecimento de voz não suportado neste navegador.");
+      return;
+    }
+    const rec = new SpeechRecognition();
+    rec.lang = "pt-BR";
+    setVoiceListening(true);
+    
+    rec.onstart = () => {
+      speakText("Buscando time... Fale o nome do time agora!");
+    };
+    
+    rec.onresult = (event: any) => {
+      const text = event.results[0][0].transcript.replace(/\.$/, "");
+      setSearchQuery(text);
+      toast.success(`Buscando por: "${text}"`);
+      setVoiceListening(false);
+      
+      setTimeout(() => {
+        const q = text.toLowerCase();
+        const found = matches.filter(m => m.home.toLowerCase().includes(q) || m.away.toLowerCase().includes(q));
+        if (found.length > 0) {
+          // Ordena os ao vivo primeiro
+          const sorted = [...found].sort((a, b) => {
+            const aLive = ["1H", "HT", "2H", "ET", "BT", "P", "INT", "LIVE"].includes(a.statusShort ?? "");
+            const bLive = ["1H", "HT", "2H", "ET", "BT", "P", "INT", "LIVE"].includes(b.statusShort ?? "");
+            if (aLive && !bLive) return -1;
+            if (!aLive && bLive) return 1;
+            return 0;
+          });
+          const top = sorted[0];
+          const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "INT", "LIVE"].includes(top.statusShort ?? "");
+          let stText = isLive 
+            ? `Jogo ao vivo. Placar: ${top.homeGoals} a ${top.awayGoals}.`
+            : `Começa em ${new Date(top.commence_time).toLocaleDateString("pt-BR", {day:"2-digit", month:"2-digit"})} às ${new Date(top.commence_time).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}.`;
+          speakText(`Encontrei ${found.length} jogos para ${text}. O primeiro da lista é: ${top.home} contra ${top.away}. ${stText} Toque nele duas vezes para abrir.`);
+        } else {
+          speakText(`Nenhum jogo encontrado para o time ${text}.`);
+        }
+      }, 500);
+    };
+    
+    rec.onerror = () => {
+      setVoiceListening(false);
+      toast.error("Erro no reconhecimento de voz.");
+    };
+    
+    rec.start();
+  };
+
+  const toggleAccessibility = () => {
+    const next = !accessibilityMode;
+    setAccessibilityMode(next);
+    localStorage.setItem("acessibilidade_ativa", String(next));
+    if (next) {
+      speakText("Modo de acessibilidade de áudio ativado! Toque uma vez em qualquer partida para ouvir o placar, e duas vezes rápido para abrir.");
+      toast.success("Modo Acessibilidade por Áudio Ativado!");
+    } else {
+      window.speechSynthesis.cancel();
+      toast.info("Modo Acessibilidade por Áudio Desativado.");
+    }
+  };
   const [dutchModal, setDutchModal] = useState<{ matchId: string; sportKey: string; home: string; away: string; league: string; commenceTime: string } | null>(null);
   const PAGE_SIZE = 200;
   const navigate = useNavigate();
@@ -154,7 +237,29 @@ function Dashboard() {
     });
   }, [oppFiltered]);
 
-  const visibleAll = selectedLeague === "all" ? oppFiltered : oppFiltered.filter((m) => m.league === selectedLeague);
+  const searchedMatches = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return oppFiltered;
+    return oppFiltered.filter((m) =>
+      m.home.toLowerCase().includes(q) ||
+      m.away.toLowerCase().includes(q) ||
+      m.league.toLowerCase().includes(q)
+    );
+  }, [oppFiltered, searchQuery]);
+
+  const sortedMatches = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return searchedMatches;
+    return [...searchedMatches].sort((a, b) => {
+      const aLive = ["1H", "HT", "2H", "ET", "BT", "P", "INT", "LIVE"].includes(a.statusShort ?? "");
+      const bLive = ["1H", "HT", "2H", "ET", "BT", "P", "INT", "LIVE"].includes(b.statusShort ?? "");
+      if (aLive && !bLive) return -1;
+      if (!aLive && bLive) return 1;
+      return new Date(a.commence_time).getTime() - new Date(b.commence_time).getTime();
+    });
+  }, [searchedMatches, searchQuery]);
+
+  const visibleAll = selectedLeague === "all" ? sortedMatches : sortedMatches.filter((m) => m.league === selectedLeague);
   const totalPages = Math.max(1, Math.ceil(visibleAll.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
   const visible = visibleAll.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
@@ -310,6 +415,41 @@ function Dashboard() {
               );
             })}
           </div>
+        </Card>
+
+        {/* BUSCA POR VOZ E MODO ACESSIBILIDADE DE ÁUDIO */}
+        <Card className="card-elev p-4 mb-4 flex flex-col md:flex-row items-center gap-4 bg-[#161b22] border-primary/20">
+          <div className="flex-1 w-full relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Digite o nome do time para pesquisar..."
+              className="pl-9 pr-12 text-sm bg-[#0d1117] border-border/40 text-white"
+            />
+            <button
+              onClick={startVoiceSearch}
+              className={cn(
+                "absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-white transition-colors",
+                voiceListening ? "bg-destructive animate-pulse" : "bg-primary hover:bg-primary-hover"
+              )}
+              title="Pesquisar por voz"
+              aria-label="Pesquisar por voz"
+            >
+              {voiceListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4 text-primary-foreground" />}
+            </button>
+          </div>
+          <Button 
+            onClick={toggleAccessibility}
+            variant={accessibilityMode ? "default" : "outline"}
+            className={cn(
+              "font-bold text-xs flex items-center gap-2 shrink-0 w-full md:w-auto",
+              accessibilityMode ? "bg-primary text-primary-foreground" : "text-muted-foreground border-border/40"
+            )}
+          >
+            {accessibilityMode ? <Volume2 className="h-4 w-4 text-primary-foreground animate-bounce" /> : <VolumeX className="h-4 w-4" />}
+            {accessibilityMode ? "Acessibilidade de Áudio Ativa" : "Ativar Áudio-Descrição de Jogos"}
+          </Button>
         </Card>
 
         {data?.error && (() => {
@@ -569,6 +709,32 @@ function Dashboard() {
                             search={{ sportKey: m.sport_key }}
                             onMouseEnter={prefetch}
                             onTouchStart={prefetch}
+                            onClick={(e) => {
+                              if (accessibilityMode) {
+                                e.preventDefault();
+                                if (focusedMatchId === m.id) {
+                                  navigate({
+                                    to: "/match/$matchId",
+                                    params: { matchId: m.id },
+                                    search: { sportKey: m.sport_key }
+                                  });
+                                } else {
+                                  setFocusedMatchId(m.id);
+                                  let speech = `Jogo: ${m.home} contra ${m.away}. `;
+                                  if (isLive) {
+                                    speech += `Ao vivo. Placar: ${m.homeGoals} a ${m.awayGoals}. `;
+                                    if (m.statusElapsed) speech += `Tempo de jogo: ${m.statusElapsed} minutos. `;
+                                  } else if (isFinished) {
+                                    speech += `Encerrado. Placar final: ${m.homeGoals} a ${m.awayGoals}. `;
+                                  } else {
+                                    const date = new Date(m.commence_time);
+                                    speech += `A começar no dia ${date.toLocaleDateString("pt-BR", {day: "numeric", month: "long"})} às ${date.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"})}. `;
+                                  }
+                                  speech += "Toque novamente rápido para abrir.";
+                                  speakText(speech);
+                                }
+                              }
+                            }}
                             className="flex items-center gap-3 flex-1 min-w-0"
                           >
                             <div className="num text-[11px] text-muted-foreground w-24 text-center leading-tight shrink-0">

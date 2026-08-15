@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Gamepad2, Target, Trophy, History, LogOut, Star, Newspaper } from "lucide-react";
+import { Gamepad2, Target, Trophy, History, LogOut, Star, Newspaper, Accessibility } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,7 +9,7 @@ import { useFavoriteTeam } from "@/hooks/useFavoriteTeam";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { isFanaticEnabled } from "@/components/FanaticTheme";
-import logoPlayer from "@/assets/logo-player.png";
+import logoResulta from "@/assets/resulta_logo.jpg";
 import { AdSlot } from "@/components/AdSlot";
 
 function AlternatingBrand({ teamName }: { teamName: string }) {
@@ -20,7 +20,7 @@ function AlternatingBrand({ teamName }: { teamName: string }) {
   }, []);
   return (
     <span key={showTeam ? "t" : "a"} className="inline-block animate-fade-in">
-      {showTeam ? teamName : "MinhaAPOSTA"}
+      {showTeam ? teamName : "resulta."}
     </span>
   );
 }
@@ -53,18 +53,21 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 grid place-items-center glow transition-transform group-hover:scale-105 ring-1 ring-primary/40">
+          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 grid place-items-center glow transition-transform group-hover:scale-105 ring-1 ring-primary/40 overflow-hidden">
             {fanatic && team!.badge ? (
               <img src={team!.badge} alt={team!.name} width={40} height={40} className="w-9 h-9 object-contain drop-shadow-[0_0_8px_rgba(0,0,0,0.6)]" />
             ) : (
-              <img src={logoPlayer} alt="MinhaAPOSTA" width={40} height={40} className="w-9 h-9 object-contain drop-shadow-[0_0_8px_oklch(var(--primary)/0.8)]" />
+              <img src={logoResulta} alt="resulta." width={40} height={40} className="w-full h-full object-cover" />
             )}
           </div>
           <span className={`text-xl font-bold tracking-tight hidden sm:inline ${fanatic ? "text-white drop-shadow" : "text-grad-neon"}`}>
-            {fanatic ? <AlternatingBrand teamName={team!.name} /> : "MinhaAPOSTA"}
+            {fanatic ? <AlternatingBrand teamName={team!.name} /> : "resulta."}
           </span>
         </Link>
         <nav className={`flex items-center gap-1 lg:gap-3 text-sm flex-1 justify-end overflow-x-auto no-scrollbar ${fanatic ? "[--nav-fg:white] [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]" : "[--nav-fg:hsl(var(--foreground))]"}`}>
+          <Link to="/acessivel-ja" title="Acessível.Já" className="group flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-primary hover:bg-accent/40 transition-colors shrink-0" style={{ color: "var(--nav-fg)" }} activeProps={{ className: "font-semibold text-primary" }}>
+            <Accessibility className="w-5 h-5 text-primary animate-pulse" /> <span className="hidden group-hover:inline xl:inline">Acessível.Já</span>
+          </Link>
           <Link to="/dashboard" title={t("nav.games")} className="group flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-primary hover:bg-accent/40 transition-colors shrink-0" style={{ color: "var(--nav-fg)" }} activeProps={{ className: "font-semibold" }}>
             <Gamepad2 className="w-5 h-5" /> <span className="hidden group-hover:inline xl:inline">{t("nav.games")}</span>
           </Link>
@@ -109,6 +112,7 @@ export function ResponsibleFooter() {
   const { t } = useTranslation();
   return (
     <>
+      <AdSlot slot="AD_BOT_03" className="max-w-4xl mx-auto my-6 px-4" />
       <footer className="border-t border-border/60 mt-8 py-8 px-4 text-center text-xs text-muted-foreground space-y-2 max-w-4xl mx-auto">
         <p className="font-semibold text-sm text-foreground">{t("footer.responsible")}</p>
         <p>{t("footer.odds")}</p>
@@ -121,7 +125,7 @@ export function ResponsibleFooter() {
           <span>|</span>
           <a href="mailto:srgordo2005@gmail.com" className="underline hover:text-primary">{t("footer.contact")}</a>
         </p>
-        <p className="pt-2 opacity-70">© {new Date().getFullYear()} MinhaAPOSTA — {t("footer.copyright")}</p>
+        <p className="pt-2 opacity-70">© {new Date().getFullYear()} resulta. — {t("footer.copyright")}</p>
       </footer>
     </>
   );
