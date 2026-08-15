@@ -28,10 +28,10 @@ call npx vercel link --project resulta-app --yes
 echo.
 echo [Passo 3/4] Gravando as senhas do novo Supabase na nuvem da Vercel...
 echo.
-call npx vercel env add VITE_SUPABASE_URL production "https://paelbarlmayswqilhoxa.supabase.co" --yes
-call npx vercel env add VITE_SUPABASE_PUBLISHABLE_KEY production "sb_publishable_6Kz2o4DWlxhBgc7oyDt2AA_KmphGK-h" --yes
-call npx vercel env add SUPABASE_URL production "https://paelbarlmayswqilhoxa.supabase.co" --yes
-call npx vercel env add SUPABASE_PUBLISHABLE_KEY production "sb_publishable_6Kz2o4DWlxhBgc7oyDt2AA_KmphGK-h" --yes
+echo https://paelbarlmayswqilhoxa.supabase.co|call npx vercel env add VITE_SUPABASE_URL production
+echo sb_publishable_6Kz2o4DWlxhBgc7oyDt2AA_KmphGK-h|call npx vercel env add VITE_SUPABASE_PUBLISHABLE_KEY production
+echo https://paelbarlmayswqilhoxa.supabase.co|call npx vercel env add SUPABASE_URL production
+echo sb_publishable_6Kz2o4DWlxhBgc7oyDt2AA_KmphGK-h|call npx vercel env add SUPABASE_PUBLISHABLE_KEY production
 
 :: 4. Fazer o Deploy de Producao
 echo.
