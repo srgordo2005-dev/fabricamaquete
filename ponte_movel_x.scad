@@ -15,20 +15,20 @@ module ponte_movel_x_impressao() {
             translate([0, -17.5, 0.55])
                 cube([141.0, 10, 5], center=true);
             
-            // Coluna de Fixação Esquerda do motor Y (x = -26.0mm)
-            translate([-26.0, -14.5, (0.55 - 9.0)/2])
+            // Coluna de Fixação Esquerda do motor Y (x = -21.0mm)
+            translate([-21.0, -14.5, (0.55 - 9.0)/2])
                 cube([7, 6, 0.55 + 9.0], center=true);
-            translate([-26.0, -8.5, -9.0 + 1.5]) {
+            translate([-21.0, -8.5, -9.0 + 1.5]) {
                 difference() {
                     cylinder(h = 3, r = 3.5, center=true);
                     cylinder(h = 4, r = furo_m3/2, center=true);
                 }
             }
 
-            // Coluna de Fixação Direita do motor Y (x = 17.0mm)
-            translate([17.0, -14.5, (0.55 - 9.0)/2])
+            // Coluna de Fixação Direita do motor Y (x = 5.0mm)
+            translate([5.0, -14.5, (0.55 - 9.0)/2])
                 cube([7, 6, 0.55 + 9.0], center=true);
-            translate([17.0, -8.5, -9.0 + 1.5]) {
+            translate([5.0, -8.5, -9.0 + 1.5]) {
                 difference() {
                     cylinder(h = 3, r = 3.5, center=true);
                     cylinder(h = 4, r = furo_m3/2, center=true);
