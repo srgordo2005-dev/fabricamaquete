@@ -13,6 +13,7 @@ import { LiveTactilePitch } from "@/components/LiveTactilePitch";
 import logoAcessivelJa from "@/assets/acessivel_ja_logo.jpg";
 import { Volume2, VolumeX, ShieldAlert, Play, Square, RefreshCw, LogOut, ArrowRight, ShoppingCart } from "lucide-react";
 import { AdSlot } from "@/components/AdSlot";
+import { useAccess } from "@/hooks/useAccess";
 
 export const Route = createFileRoute("/acessivel-ja")({ component: AcessivelJaPage });
 
@@ -27,6 +28,7 @@ interface MatchData {
 }
 
 function AcessivelJaPage() {
+  const { isAdmin } = useAccess();
   const [session, setSession] = useState<any>(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [liveMatches, setLiveMatches] = useState<MatchData[]>([]);
@@ -316,22 +318,28 @@ function AcessivelJaPage() {
                 </Card>
 
                 {/* BOTÕES DE COMANDO DA MAQUETE */}
-                <div className="grid grid-cols-3 gap-2">
-                  <Button size="lg" onClick={triggerHoming} className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex flex-col items-center justify-center p-4 gap-1.5 h-auto">
-                    <RefreshCw className="w-5 h-5 animate-spin" /> Calibrar Mesa
-                  </Button>
-                  <Button size="lg" onClick={triggerPresentation} className="bg-primary text-primary-foreground font-bold text-xs flex flex-col items-center justify-center p-4 gap-1.5 h-auto">
-                    <Play className="w-5 h-5" /> Apresentar Campo
-                  </Button>
-                  <Button size="lg" onClick={triggerStop} variant="destructive" className="font-bold text-xs flex flex-col items-center justify-center p-4 gap-1.5 h-auto">
-                    <Square className="w-5 h-5" /> Parar
-                  </Button>
-                </div>
+                {isAdmin ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button size="lg" onClick={triggerHoming} className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex flex-col items-center justify-center p-4 gap-1.5 h-auto">
+                      <RefreshCw className="w-5 h-5 animate-spin" /> Calibrar Mesa
+                    </Button>
+                    <Button size="lg" onClick={triggerPresentation} className="bg-primary text-primary-foreground font-bold text-xs flex flex-col items-center justify-center p-4 gap-1.5 h-auto">
+                      <Play className="w-5 h-5" /> Apresentar Campo
+                    </Button>
+                    <Button size="lg" onClick={triggerStop} variant="destructive" className="font-bold text-xs flex flex-col items-center justify-center p-4 gap-1.5 h-auto">
+                      <Square className="w-5 h-5" /> Parar
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-muted/20 rounded-lg text-xs border border-border/40 text-muted-foreground text-center">
+                    📢 <b>Modo Ouvinte Ativo</b>: Conecte os fones de ouvido para ouvir as jogadas. Os botões de calibração mecânica são reservados para o administrador da maquete.
+                  </div>
+                )}
 
                 {/* MESA VIRTUAL / CAMPO DE FUTEBOL E NARRADOR */}
                 <LiveTactilePitch 
                   matchId={selectedMatch.id}
-                  isAdmin={true} // Permite interatividade no joystick da tela
+                  isAdmin={!!isAdmin} // Permite interatividade no joystick da tela apenas se for Admin
                   homeName={selectedMatch.home}
                   awayName={selectedMatch.away}
                 />

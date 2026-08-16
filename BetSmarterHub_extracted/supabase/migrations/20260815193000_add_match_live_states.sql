@@ -22,8 +22,8 @@ USING (true);
 CREATE POLICY "Permitir que admins atualizem estados ao vivo" 
 ON public.match_live_states FOR ALL 
 TO authenticated
-USING (true)
-WITH CHECK (true);
+USING (public.has_role(auth.uid(), 'admin'::app_role))
+WITH CHECK (public.has_role(auth.uid(), 'admin'::app_role));
 
 -- Inserção de partida mock de testes para o Campo Tátil para economizar requisições de API
 INSERT INTO public.matches_cache (id, sport_key, league, home, away, commence_time, bookmaker_count, best_home, best_draw, best_away, bet365_home, bet365_draw, bet365_away, market_margin, favorite_prob, match_type, is_arb, home_goals, away_goals, status_short, status_elapsed, updated_at)
