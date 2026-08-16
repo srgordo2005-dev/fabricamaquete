@@ -198,28 +198,38 @@ module ponte_movel_x_montagem() {
     
     // Cremalheira X
     color("teal") {
-        union() {
-            translate([0, -17.5, 0.55])
-                cube([141.0, 10, 5], center=true);
+        difference() {
+            union() {
+                translate([0, -17.5, 0.55])
+                    cube([141.0, 10, 5], center=true);
+                
+                // NOVO SUPORTE UNIFICADO E RIGIDO PARA MOTOR Y (IGUAL AO DO CARRINHO X)
+                // Centrado em X = -8.0, Y = -28.5. Espessura de 5.0mm (alinhado com a viga)
+                translate([-8.0, -28.5, 0.55])
+                    cube([54, 32, 5.0], center=true);
+                    
+                // Mãos-francesas horizontais de reforço (Gussets) no plano X-Y
+                translate([-35.0, -12.5, -1.95]) {
+                    linear_extrude(height = 5.0) {
+                        polygon(points=[[0, 0], [4, 0], [0, -10]]);
+                    }
+                }
+                translate([19.0, -12.5, -1.95]) {
+                    linear_extrude(height = 5.0) {
+                        polygon(points=[[0, 0], [-4, 0], [0, -10]]);
+                    }
+                }
+            }
             
-            // Colunas de Fixação do motor Y Redondo
-            translate([-31.0, -14.5, (0.55 - 9.0)/2])
-                cube([7, 6, 0.55 + 9.0], center=true);
-            translate([-31.0, -8.5, -9.0 + 1.5]) {
-                difference() {
-                    cylinder(h = 3, r = 3.5, center=true);
-                    cylinder(h = 4, r = furo_m3/2, center=true);
-                }
-            }
-
-            translate([15.0, -14.5, (0.55 - 9.0)/2])
-                cube([7, 6, 0.55 + 9.0], center=true);
-            translate([15.0, -8.5, -9.0 + 1.5]) {
-                difference() {
-                    cylinder(h = 3, r = 3.5, center=true);
-                    cylinder(h = 4, r = furo_m3/2, center=true);
-                }
-            }
+            // Furo central do colar do NEMA 14 Redondo (23mm de diâmetro) para assentar plano
+            translate([-8.0, -29.4, 0.55])
+                cylinder(h = 10, r = 11.5, center=true);
+                
+            // Dois furos de fixação M3 com espaçamento de 46mm para o NEMA 14 Redondo
+            translate([-31.0, -29.4, 0.55])
+                cylinder(h = 10, r = furo_m3/2, center=true);
+            translate([15.0, -29.4, 0.55])
+                cylinder(h = 10, r = furo_m3/2, center=true);
         }
         
         // Dentes da Cremalheira X
