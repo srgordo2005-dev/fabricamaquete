@@ -28,22 +28,21 @@ module carrinho_central_x() {
                     }
                 }
                 
-                // NOVO SUPORTE UNIFICADO E RIGIDO PARA MOTOR NEMA 14 (36mm)
-                // Estende-se de Y = -12 (face do carrinho) até Y = -44 (espessura de 3mm)
+                // NOVO SUPORTE UNIFICADO E RIGIDO PARA MOTOR NEMA 14 REDONDO (36.5mm)
+                // Furos com espaçamento de 46mm (X = -23 e X = 23), largura de 54mm e espessura de 3mm
                 translate([0, -28.0, 7.55 + 1.5]) {
-                    cube([38, 32, 3.0], center=true);
+                    cube([54, 32, 3.0], center=true);
                 }
                 
-                // Abas de reforço laterais (Gussets) para evitar flexão do suporte
-                // Triângulos ligando as laterais do suporte ao corpo do carrinho
-                translate([-17.5, -12.0, 7.55 + 3.0]) {
+                // Abas de reforço laterais (Gussets) reposicionadas para a placa de 54mm
+                translate([-25.5, -12.0, 7.55 + 3.0]) {
                     rotate([90, 0, 90]) {
                         linear_extrude(height = 3) {
                             polygon(points=[[0,0], [12,0], [0,8]]);
                         }
                     }
                 }
-                translate([14.5, -12.0, 7.55 + 3.0]) {
+                translate([22.5, -12.0, 7.55 + 3.0]) {
                     rotate([90, 0, 90]) {
                         linear_extrude(height = 3) {
                             polygon(points=[[0,0], [12,0], [0,8]]);
@@ -52,17 +51,15 @@ module carrinho_central_x() {
                 }
             }
             
-            // Furo central do colar do NEMA 14 (23mm de diâmetro) para assentar plano
+            // Furo central do colar do NEMA 14 Redondo (23mm de diâmetro) para assentar plano
             translate([0, -29.4, 7.55 + 1.5])
                 cylinder(h = 10, r = 11.5, center=true);
                 
-            // Furos de fixação M3 para o motor NEMA 14 (Espaçamento 26mm x 26mm)
-            for (x = [-13, 13]) {
-                for (y = [-13, 13]) {
-                    translate([x, -29.4 + y, 7.55 + 1.5])
-                        cylinder(h = 10, r = furo_m3/2, center=true);
-                }
-            }
+            // Dois furos de fixação M3 com espaçamento de 46mm para o NEMA 14 Redondo
+            translate([-23.0, -29.4, 7.55 + 1.5])
+                cylinder(h = 10, r = furo_m3/2, center=true);
+            translate([23.0, -29.4, 7.55 + 1.5])
+                cylinder(h = 10, r = furo_m3/2, center=true);
             
             // Canal de deslize 1 (Eixo Único - Y = 0mm) - 100% FECHADO E ÍNTEGRO
             translate([0, 0, 18.55])

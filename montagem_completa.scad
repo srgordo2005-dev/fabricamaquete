@@ -202,19 +202,19 @@ module ponte_movel_x_montagem() {
             translate([0, -17.5, 0.55])
                 cube([141.0, 10, 5], center=true);
             
-            // Colunas de Fixação do motor Y
-            translate([-21.0, -14.5, (0.55 - 9.0)/2])
+            // Colunas de Fixação do motor Y Redondo
+            translate([-31.0, -14.5, (0.55 - 9.0)/2])
                 cube([7, 6, 0.55 + 9.0], center=true);
-            translate([-21.0, -8.5, -9.0 + 1.5]) {
+            translate([-31.0, -8.5, -9.0 + 1.5]) {
                 difference() {
                     cylinder(h = 3, r = 3.5, center=true);
                     cylinder(h = 4, r = furo_m3/2, center=true);
                 }
             }
 
-            translate([5.0, -14.5, (0.55 - 9.0)/2])
+            translate([15.0, -14.5, (0.55 - 9.0)/2])
                 cube([7, 6, 0.55 + 9.0], center=true);
-            translate([5.0, -8.5, -9.0 + 1.5]) {
+            translate([15.0, -8.5, -9.0 + 1.5]) {
                 difference() {
                     cylinder(h = 3, r = 3.5, center=true);
                     cylinder(h = 4, r = furo_m3/2, center=true);
