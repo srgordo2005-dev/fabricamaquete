@@ -7,35 +7,28 @@ echo.
 
 cd BetSmarterHub_extracted
 
-:: 1. Efetuar Login na Vercel
-echo [Passo 1/4] Autenticando com a sua conta Vercel...
-echo Se voce nao estiver logado, o navegador abrira para voce entrar com o GitHub.
-echo.
-call npx vercel login
-if %errorlevel% neq 0 (
-    echo [Erro] Falha na autenticacao do Vercel. Certifique-se de completar o login no navegador!
-    pause
-    exit /b
+:: Configura o Token da Vercel lendo o arquivo local .env (ignorado pelo git)
+for /f "usebackq tokens=1,2 delims==" %%I in (".env") do (
+    if "%%I"=="VERCEL_TOKEN" set VERCEL_TOKEN=%%~J
 )
 
-:: 2. Vincular o projeto
-echo.
-echo [Passo 2/4] Vinculando a pasta do aplicativo com o painel da Vercel...
+:: 1. Vincular o projeto
+echo [Passo 1/3] Vinculando a pasta do aplicativo com o painel da Vercel...
 echo.
 call npx vercel link --project resulta-app --yes
 
-:: 3. Configurar as chaves do Supabase no ambiente de nuvem do Vercel
+:: 2. Configurar as chaves do Supabase no ambiente de nuvem do Vercel
 echo.
-echo [Passo 3/4] Gravando as senhas do novo Supabase na nuvem da Vercel...
+echo [Passo 2/3] Gravando as senhas do novo Supabase na nuvem da Vercel...
 echo.
 echo https://paelbarlmayswqilhoxa.supabase.co|call npx vercel env add VITE_SUPABASE_URL production
 echo sb_publishable_6Kz2o4DWlxhBgc7oyDt2AA_KmphGK-h|call npx vercel env add VITE_SUPABASE_PUBLISHABLE_KEY production
 echo https://paelbarlmayswqilhoxa.supabase.co|call npx vercel env add SUPABASE_URL production
 echo sb_publishable_6Kz2o4DWlxhBgc7oyDt2AA_KmphGK-h|call npx vercel env add SUPABASE_PUBLISHABLE_KEY production
 
-:: 4. Fazer o Deploy de Producao
+:: 3. Fazer o Deploy de Producao
 echo.
-echo [Passo 4/4] Compilando e gerando o link publico na nuvem (Production)...
+echo [Passo 3/3] Compilando e gerando o link publico na nuvem (Production)...
 echo Aguarde, isso pode levar ate 2 minutos...
 echo.
 call npx vercel --prod --yes
