@@ -28,38 +28,35 @@ module carrinho_central_x() {
                     }
                 }
                 
-                // NOVO SUPORTE UNIFICADO E RIGIDO PARA MOTOR NEMA 14 REDONDO (36.5mm)
-                // Furos com espaçamento de 46mm (X = -23 e X = 23), largura de 54mm e espessura de 3mm
-                translate([0, -28.0, 7.55 + 1.5]) {
-                    cube([54, 32, 3.0], center=true);
-                }
-                
-                // Abas de reforço laterais (Gussets) reposicionadas para a placa de 54mm
-                translate([-25.5, -12.0, 7.55 + 3.0]) {
-                    rotate([90, 0, 90]) {
-                        linear_extrude(height = 3) {
-                            polygon(points=[[0,0], [12,0], [0,8]]);
+                // Suporte do Motor X Esquerdo Plano & Embutido (x = -21.5mm)
+                // Furo recuado para Y = -26.2mm seguro. Embutido sob o bloco até Y = -8.0mm
+                translate([-21.5, 0, 7.55 + 2.0]) {
+                    difference() {
+                        hull() {
+                            translate([0, -8.0, 0])
+                                cube([10, 0.1, 4.0], center=true);
+                            translate([0, -26.2, 0])
+                                cylinder(h = 4.0, r = 3.5, center=true);
                         }
+                        translate([0, -26.2, 0])
+                            cylinder(h = 5.0, r = furo_m3/2, center=true);
                     }
                 }
-                translate([22.5, -12.0, 7.55 + 3.0]) {
-                    rotate([90, 0, 90]) {
-                        linear_extrude(height = 3) {
-                            polygon(points=[[0,0], [12,0], [0,8]]);
+
+                // Suporte do Motor X Direito Plano & Embutido (x = 21.5mm)
+                translate([21.5, 0, 7.55 + 2.0]) {
+                    difference() {
+                        hull() {
+                            translate([0, -8.0, 0])
+                                cube([10, 0.1, 4.0], center=true);
+                            translate([0, -26.2, 0])
+                                cylinder(h = 4.0, r = 3.5, center=true);
                         }
+                        translate([0, -26.2, 0])
+                            cylinder(h = 5.0, r = furo_m3/2, center=true);
                     }
                 }
             }
-            
-            // Furo central do colar do NEMA 14 Redondo (23mm de diâmetro) para assentar plano
-            translate([0, -29.4, 7.55 + 1.5])
-                cylinder(h = 10, r = 11.5, center=true);
-                
-            // Dois furos de fixação M3 com espaçamento de 46mm para o NEMA 14 Redondo
-            translate([-23.0, -29.4, 7.55 + 1.5])
-                cylinder(h = 10, r = furo_m3/2, center=true);
-            translate([23.0, -29.4, 7.55 + 1.5])
-                cylinder(h = 10, r = furo_m3/2, center=true);
             
             // Canal de deslize 1 (Eixo Único - Y = 0mm) - 100% FECHADO E ÍNTEGRO
             translate([0, 0, 18.55])

@@ -198,38 +198,28 @@ module ponte_movel_x_montagem() {
     
     // Cremalheira X
     color("teal") {
-        difference() {
-            union() {
-                translate([0, -17.5, 0.55])
-                    cube([141.0, 10, 5], center=true);
-                
-                // NOVO SUPORTE UNIFICADO E RIGIDO PARA MOTOR Y (IGUAL AO DO CARRINHO X)
-                // Centrado em X = -8.0, Y = -28.5. Espessura de 5.0mm (alinhado com a viga)
-                translate([-8.0, -28.5, 0.55])
-                    cube([54, 32, 5.0], center=true);
-                    
-                // Mãos-francesas horizontais de reforço (Gussets) no plano X-Y
-                translate([-35.0, -12.5, -1.95]) {
-                    linear_extrude(height = 5.0) {
-                        polygon(points=[[0, 0], [4, 0], [0, -10]]);
-                    }
-                }
-                translate([19.0, -12.5, -1.95]) {
-                    linear_extrude(height = 5.0) {
-                        polygon(points=[[0, 0], [-4, 0], [0, -10]]);
-                    }
+        union() {
+            translate([0, -17.5, 0.55])
+                cube([141.0, 10, 5], center=true);
+            
+            // Colunas de Fixação do motor Y
+            translate([-26.0, -14.5, (0.55 - 9.0)/2])
+                cube([7, 6, 0.55 + 9.0], center=true);
+            translate([-26.0, -8.5, -9.0 + 1.5]) {
+                difference() {
+                    cylinder(h = 3, r = 3.5, center=true);
+                    cylinder(h = 4, r = furo_m3/2, center=true);
                 }
             }
-            
-            // Furo central do colar do NEMA 14 Redondo (23mm de diâmetro) para assentar plano
-            translate([-8.0, -29.4, 0.55])
-                cylinder(h = 10, r = 11.5, center=true);
-                
-            // Dois furos de fixação M3 com espaçamento de 46mm para o NEMA 14 Redondo
-            translate([-31.0, -29.4, 0.55])
-                cylinder(h = 10, r = furo_m3/2, center=true);
-            translate([15.0, -29.4, 0.55])
-                cylinder(h = 10, r = furo_m3/2, center=true);
+
+            translate([17.0, -14.5, (0.55 - 9.0)/2])
+                cube([7, 6, 0.55 + 9.0], center=true);
+            translate([17.0, -8.5, -9.0 + 1.5]) {
+                difference() {
+                    cylinder(h = 3, r = 3.5, center=true);
+                    cylinder(h = 4, r = furo_m3/2, center=true);
+                }
+            }
         }
         
         // Dentes da Cremalheira X
@@ -259,26 +249,31 @@ module carrinho_central_x_montagem() {
                 }
             }
             
-            // NOVO SUPORTE UNIFICADO E RIGIDO PARA MOTOR NEMA 14 (36mm)
-            // Estende-se de Y = -12 (face do carrinho) até Y = -44 (espessura de 3mm)
-            translate([0, -28.0, 7.55 + 1.5]) {
-                cube([38, 32, 3.0], center=true);
-            }
-            
-            // Abas de reforço laterais (Gussets) para evitar flexão do suporte
-            // Triângulos ligando as laterais do suporte ao corpo do carrinho
-            translate([-17.5, -12.0, 7.55 + 3.0]) {
-                rotate([90, 0, 90]) {
-                    linear_extrude(height = 3) {
-                        polygon(points=[[0,0], [12,0], [0,8]]);
+            // Suporte do Motor X Esquerdo Plano & Embutido (x = -21.5mm)
+            translate([-21.5, 0, 7.55 + 2.0]) {
+                difference() {
+                    hull() {
+                        translate([0, -8.0, 0])
+                            cube([10, 0.1, 4.0], center=true);
+                        translate([0, -26.2, 0])
+                            cylinder(h = 4.0, r = 3.5, center=true);
                     }
+                    translate([0, -26.2, 0])
+                        cylinder(h = 5.0, r = furo_m3/2, center=true);
                 }
             }
-            translate([14.5, -12.0, 7.55 + 3.0]) {
-                rotate([90, 0, 90]) {
-                    linear_extrude(height = 3) {
-                        polygon(points=[[0,0], [12,0], [0,8]]);
+
+            // Suporte do Motor X Direito Plano & Embutido (x = 21.5mm)
+            translate([21.5, 0, 7.55 + 2.0]) {
+                difference() {
+                    hull() {
+                        translate([0, -8.0, 0])
+                            cube([10, 0.1, 4.0], center=true);
+                        translate([0, -26.2, 0])
+                            cylinder(h = 4.0, r = 3.5, center=true);
                     }
+                    translate([0, -26.2, 0])
+                        cylinder(h = 5.0, r = furo_m3/2, center=true);
                 }
             }
         }
@@ -287,17 +282,9 @@ module carrinho_central_x_montagem() {
         translate([0, 0, 13.5 + 10.1/2])
             cube([50, 10.3, 10.3], center=true);
             
-        // Furo central do colar do NEMA 14 (23mm de diâmetro) para assentar plano
-        translate([0, -29.4, 7.55 + 1.5])
-            cylinder(h = 10, r = 11.5, center=true);
-            
-        // Furos de fixação M3 para o motor NEMA 14 (Espaçamento 26mm x 26mm)
-        for (x = [-13, 13]) {
-            for (y = [-13, 13]) {
-                translate([x, -29.4 + y, 7.55 + 1.5])
-                    cylinder(h = 10, r = furo_m3/2, center=true);
-            }
-        } 
+        // RECORTES DE SEGURANÇA E FOLGA PARA O MOTOR NEMA 17
+        translate([0, -12.0 + 3.425, 18.55])
+            cube([33.0, 6.85, 14.5], center=true); 
     }
 }
 

@@ -32,12 +32,9 @@ module cremalheira_x() {
             cube([eixo_quadrado_w, comprimento_ponte + 2, eixo_quadrado_w + 0.2], center=true);
     }
     
-    // 3. Extensão da Cremalheira para alcançar o pinhão do motor X (X = -23.0mm)
-    translate([-15.05, 0, (eixo_quadrado_w + parede)/2])
-        cube([15.9, comprimento_ponte, eixo_quadrado_w + parede], center=true);
-        
-    // 4. Dentes da Cremalheira GT2 posicionados na face esquerda (X = -23.0)
-    translate([-23.0, -comprimento_ponte/2, 0]) {
+    // 3. Dentes da Cremalheira GT2 (Gerados ao longo da lateral esquerda -Y da canaleta)
+    // O motor X vai andar mordendo essa trilha lateral
+    translate([-eixo_quadrado_w/2 - parede, -comprimento_ponte/2, 0]) {
         linear_extrude(height=eixo_quadrado_w + parede) {
             union() {
                 // Trilho base da parede de dentes

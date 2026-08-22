@@ -8,7 +8,7 @@ $fn = 60;
 eixo_quadrado_w = 10.2;  // Encaixe na barra da ponte (10mm + 0.2mm)
 nema14_d = 36.5;         // Diâmetro do motor
 furo_m3 = 3.2;           // Furo para parafusos M3 de fixação
-furos_distancia = 46;    // Distância de 46mm entre centros dos furos M3 do NEMA 14 Redondo
+furos_distancia = 26;    // Distância de 26mm entre centros dos furos M3 do NEMA 14
 
 module suporte_motor_y() {
     difference() {
@@ -19,23 +19,25 @@ module suporte_motor_y() {
             
             // Placa vertical de suporte do motor que desce
             translate([0, -10 - 2.5, -12])
-                cube([54, 5, 40], center=true); // Largura aumentada para 54mm
+                cube([40, 5, 40], center=true);
         }
         
         // 2. Canal Quadrado de Encaixe da Ponte 10x10 (Correndo ao longo de Y)
         cube([eixo_quadrado_w, 22, eixo_quadrado_w], center=true);
         
         // 3. Furos de montagem do Motor NEMA 14 (Na placa vertical)
-        // Furo central do eixo do motor (23mm de diâmetro para colar de ressalto de 22mm)
+        // Furo central do eixo do motor
         translate([0, -15, -15])
             rotate([90, 0, 0])
-                cylinder(h = 10, r = 11.5, center=true); // Vão do colar central
+                cylinder(h = 10, r = 11, center=true); // Vão do colar central
         
-        // Furos para os 2 parafusos M3 do NEMA 14 Redondo (Espaçamento de 46mm)
+        // Furos para os 4 parafusos M3 do NEMA 14 (Espaçamento de 26mm)
         for (x = [-furos_distancia/2, furos_distancia/2]) {
-            translate([x, -10, -15])
-                rotate([90, 0, 0])
-                    cylinder(h = 10, r = furo_m3/2, center=true);
+            for (z = [-furos_distancia/2, furos_distancia/2]) {
+                translate([x, -10, -15 + z])
+                    rotate([90, 0, 0])
+                        cylinder(h = 10, r = furo_m3/2, center=true);
+            }
         }
     }
 }
